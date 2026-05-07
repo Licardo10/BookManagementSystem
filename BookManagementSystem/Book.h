@@ -10,8 +10,8 @@ struct Book
 	string author;		// 作者
 	string publisher;	// 出版社
 	string pubdate;		// 出版日期
-	double price;		// 价格
-	int state;			// 借阅状态，0表示可借，1表示已借出
+	double price = 0.0;		// 价格
+	int state = 0;			// 借阅状态，0表示可借，1表示已借出
 };
 
 extern vector<Book> books;	// 图书列表

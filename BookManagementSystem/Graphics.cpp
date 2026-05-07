@@ -9,7 +9,7 @@ Button mainButtons[] =
 {
     { 100, 150, 280, 40, "1. 查看所有图书" },
     { 100, 200, 280, 40, "2. 按书名模糊查找" },
-    { 100, 250, 280, 40, "3. 组合查询 (如 设计+教程)" },
+    { 100, 250, 280, 40, "3. 组合查询 (如 设计 教程)" },
     { 100, 300, 280, 40, "4. 按出版社查找" },
     { 100, 350, 280, 40, "5. 添加新书" },
     { 430, 150, 280, 40, "6. 修改图书 (按ISBN)" },
@@ -18,7 +18,7 @@ Button mainButtons[] =
     { 430, 350, 280, 40, "9. 退出系统" }
 };
 
-const int Button_count = sizeof(mainButtons) / sizeof(mainButtons[0]);
+const int NumberOfButton = sizeof(mainButtons) / sizeof(mainButtons[0]);
 
 void DrawMainMenu()
 {
@@ -32,7 +32,7 @@ void DrawMainMenu()
     settextcolor(RGB(200, 200, 200));
     outtextxy(200, 100, "请点击下方按钮选择功能");
 
-    for (int i = 0; i < Button_count; i++)
+    for (int i = 0; i < NumberOfButton; i++)
     {
         Button btn = mainButtons[i];
 

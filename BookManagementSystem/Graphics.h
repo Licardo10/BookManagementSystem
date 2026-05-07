@@ -14,7 +14,7 @@ struct Button
 };
 
 extern Button mainButtons[];
-extern const int Button_count;
+extern const int NumberOfButton;
 
 void DrawMainMenu();
 
