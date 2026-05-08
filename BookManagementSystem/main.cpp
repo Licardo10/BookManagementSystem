@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include <graphics.h>
 #include <iostream>
 #include <string>
@@ -8,9 +8,10 @@ using namespace std;
 
 const string DataFile = "books.txt";
 
+//初始化数据
 static bool InitData()
 {
-	if (LoadBooksFromFile(books, DataFile))
+	if (LoadDataFromFile(books, DataFile))
 		return true;
 	else
 		return false;
@@ -24,6 +25,8 @@ int	main()
 	SetWindowTextA(hwnd, "图书管理系统");
 
 	InitData();
+
+	int page = 0;	//0=主菜单	1=查找界面	2=修改界面	3=借阅界面	4=信息界面
 
 	DrawMainMenu();
 
@@ -43,108 +46,300 @@ int	main()
 			{
 				int mx = msg.x;
 				int my = msg.y;
+				bool Redraw = false;
 
-				for (int i = 0; i < NumberOfButton; i++)
+				//主菜单
+				if(page==0)
 				{
-					if (IsInButton(mx, my, mainButtons[i]))
+					for (int i = 0; i < NumberOfmainButton; i++)
 					{
-						switch (i) 
+						if (IsInButton(mx, my, mainButtons[i]))
 						{
-							case 0://查看所有图书
+							switch (i)
 							{
-								vector<Book> c1 = GetAllBooks(books);
-								ShowResultList("所有图书", c1);
+							case 0:
+							{
+								page = 1;
+								DrawSearchMenu();
 								break;
 							}
-							case 1://按书名模糊查找
+							case 1:
 							{
-								string name = ConsoleInput("请输入关键字:");
-								if (!name.empty())
-								{
-									vector<Book> c2 = FuzzySearchBookByName(books, name);
-									ShowResultList("结果为:", c2);
-								}
+								page = 2;
+								DrawModifyMenu();
 								break;
 							}
 							case 2:
 							{
-								string name = ConsoleInput("请输入关键字(以空格分隔):");
-								vector<Book> c3 = CombinedSearchByName(books, name);
-								ShowResultList("结果为:", c3);
+								page = 3;
+								DrawBorrowMenu();
 								break;
 							}
 							case 3:
 							{
-								string name = ConsoleInput("请输入关键字:");
-								vector<Book> c4 = FuzzySearchByPublisher(books, name);
-								ShowResultList("结果为:", c4);
+								page = 4;
+								DrawStatisticsMenu();
 								break;
 							}
 							case 4:
 							{
+								closegraph();
+								return 0;
+								break;
+							}
+							}
+						}
+					}
+				}
+				else if (page == 1)
+				{
+					for (int i = 0; i < NumberOfsearchButton; i++)
+					{
+						if (IsInButton(mx, my, searchButtons[i]))
+						{
+							switch (i)
+							{
+							case 0:
+							{
+								string name = InputByConsole("请输入书名:");
+								vector<Book> c0 = FuzzySearchByName(books, name);
+								PrintResult("结果为:",c0);
+								break;
+							}
+							case 1:
+							{
+								string name = InputByConsole("请输入出版社:");
+								vector<Book> c1 = FuzzySearchByPublisher(books, name);
+								PrintResult("结果为:", c1);
+								break;
+							}
+							case 2:
+							{
+								string name = InputByConsole("请输入关键字(以空格分隔):");
+								vector<Book> c2 = CombinedSearchByName(books, name);
+								PrintResult("结果为:", c2);
+								break;
+							}
+							case 3:
+							{
+								vector<Book> c3 = GetAllBooks(books);
+								PrintResult("结果为:", c3);
+								break;
+							}
+							case 4:
+							{
+								page = 0;
+								break;
+							}
+							}
+							Redraw = true;
+							//break;
+						}
+					}
+				}
+				else if (page == 2)
+				{
+					for (int i = 0; i < NumberOfmodifyButton; i++)
+					{
+						if (IsInButton(mx, my, modifyButtons[i]))
+						{
+							switch (i)
+							{
+							case 0://按ISBN修改图书
+							{
+								string isbn = InputByConsole("ISBN:");
+								Book* c0 = SearchBookByISBN(books, isbn);
+
+								string input;
+								input = InputByConsole("新书名 (留空不变): ");
+								if (!input.empty()) 
+									c0->name = input;
+
+								input = InputByConsole("新作者 (留空不变): ");
+								if (!input.empty()) 
+									c0->author = input;
+
+								input = InputByConsole("新出版社 (留空不变): ");
+								if (!input.empty()) 
+									c0->publisher = input;
+
+								input = InputByConsole("新出版日期 (留空不变): ");
+								if (!input.empty()) 
+									c0->pubdate = input;
+
+								input = InputByConsole("新价格 (留空不变): ");
+								if (!input.empty()) 
+									c0->price = atof(input.c_str());
+
+								SaveDataToFile(books, DataFile);
+								break;
+							}
+							case 1://按书名修改
+							{
+								string name = InputByConsole("请输入原书名:");
+								Book* c1 = SearchBookByName(books, name);
+
+								string input;
+								input = InputByConsole("新书名 (留空不变): ");
+								if (!input.empty())
+									c1->name = input;
+
+								input = InputByConsole("新作者 (留空不变): ");
+								if (!input.empty())
+									c1->author = input;
+
+								input = InputByConsole("新出版社 (留空不变): ");
+								if (!input.empty())
+									c1->publisher = input;
+
+								input = InputByConsole("新出版日期 (留空不变): ");
+								if (!input.empty())
+									c1->pubdate = input;
+
+								input = InputByConsole("新价格 (留空不变): ");
+								if (!input.empty())
+									c1->price = atof(input.c_str());
+
+								SaveDataToFile(books, DataFile);
+								break;
+							}
+							case 2://添加新书
+							{
 								Book newbook;
 								string input;
-								input = ConsoleInput("ISBN:"); 
-								if (input.empty()) 
-									break;
+
+								input = InputByConsole("ISBN:");
 								newbook.ISBN = input;
-								newbook.name = ConsoleInput("书名: ");
-								newbook.author = ConsoleInput("作者: ");
-								newbook.publisher = ConsoleInput("出版社: ");
-								newbook.pubdate = ConsoleInput("出版日期 (如 2023-01-01): ");
-								input = ConsoleInput("价格: ");
+								newbook.name = InputByConsole("书名: ");
+								newbook.author = InputByConsole("作者: ");
+								newbook.publisher = InputByConsole("出版社: ");
+								newbook.pubdate = InputByConsole("出版日期 (如 2026-01-01): ");
+								input = InputByConsole("价格: ");
 								newbook.price = atof(input.c_str());
 								newbook.state = 0;
+
 								AddBook(books, newbook);
-								SaveBooksToFile(books, DataFile);
+								SaveDataToFile(books, DataFile);
+								break;
+							}
+							case 3://按ISBN删除
+							{
+								string isbn = InputByConsole("请输入:");
+								if (DeleteBookByISBN(books, isbn))
+								{
+									SaveDataToFile(books, DataFile);
+									MessageBoxA(hwnd, "删除成功!", "提示", MB_OK);
+								}
+								else
+									MessageBoxA(hwnd, "未找到该图书！", "错误", MB_OK);
+								break;
+							}
+							case 4://按书名删除
+							{
+								string name = InputByConsole("请输入:");
+								if (DeleteBookByName(books, name))
+								{
+									SaveDataToFile(books, DataFile);
+									MessageBoxA(hwnd, "删除成功!", "提示", MB_OK);
+								}
+								else
+									MessageBoxA(hwnd, "未找到该图书！", "错误", MB_OK);
 								break;
 							}
 							case 5:
 							{
-								string isbn = ConsoleInput("ISBN:");
-								Book* c6 = SearchBookByISBN(books, isbn);
-								string input;
-								input = ConsoleInput("新书名 (留空不变): ");
-								if (!input.empty()) c6->name = input;
-								input = ConsoleInput("新作者 (留空不变): ");
-								if (!input.empty()) c6->author = input;
-								input = ConsoleInput("新出版社 (留空不变): ");
-								if (!input.empty()) c6->publisher = input;
-								input = ConsoleInput("新出版日期 (留空不变): ");
-								if (!input.empty()) c6->pubdate = input;
-								input = ConsoleInput("新价格 (留空不变): ");
-								if (!input.empty()) c6->price = atof(input.c_str());
-								SaveBooksToFile(books, DataFile);
+								page = 0;
 								break;
 							}
-							case 6:
+							}
+							Redraw = true;
+							//break;
+						}
+					}
+				}
+				else if (page == 3)
+				{
+					for (int i = 0; i < NumberOfborrowButton; i++)
+					{
+						if (IsInButton(mx, my, borrowButtons[i]))
+						{
+							switch (i)
 							{
-								string isbn = ConsoleInput("ISBN:");
-								if (DeleteBookByISBN(books, isbn))
-								{
-									SaveBooksToFile(books, DataFile);
-									MessageBoxA(hwnd, "删除成功!", "提示", MB_OK);
-								}
+							case 0: //借出
+							{
+								string isbn = InputByConsole("请输入ISBN:");
+								Book* book = SearchBookByISBN(books, isbn);
+								if (!book)
+									MessageBoxA(hwnd, "未找到该ISBN！", "错误", MB_OK);
+								else if (book->state == 1)
+									MessageBoxA(hwnd, "该书已借出！", "提示", MB_OK);
 								else
 								{
-									MessageBoxA(hwnd, "未找到该ISBN的图书！", "错误", MB_OK);
+									BorrowByISBN(books, isbn);
+									SaveDataToFile(books, DataFile);
+									MessageBoxA(hwnd, "借出成功！", "提示", MB_OK);
 								}
 								break;
 							}
-							case 7:
+							case 1: // 归还
 							{
-								ShowStatistics();
+								string isbn = InputByConsole("请输入ISBN:");
+								Book* book = SearchBookByISBN(books, isbn);
+								if (!book)
+									MessageBoxA(hwnd, "未找到", "错误", MB_OK);
+								else if (book->state == 0)
+									MessageBoxA(hwnd, "该书未被借出", "提示", MB_OK);
+								else
+								{
+									ReturnByISBN(books, isbn);
+									SaveDataToFile(books, DataFile);
+									MessageBoxA(hwnd, "归还成功", "提示", MB_OK);
+								}
 								break;
 							}
-							case 8:
-							{
-								closegraph();
-								return 0;
+							case 2:
+								page = 0;
+								break;
 							}
+							Redraw = true;
+							break;
 						}
-						if (i != 8)
-							DrawMainMenu();
 					}
+				}
+				else if (page == 4)
+				{
+					for (int i = 0; i < NumberOfstatisticsButton; i++)
+					{
+						if (IsInButton(mx, my, statisticsButtons[i]))
+						{
+							switch (i)
+							{
+							case 0: // 查看所有图书
+							{
+								vector<Book> c0 = GetAllBooks(books);
+								PrintResult("所有图书", c0);
+								break;
+							}
+							case 1: // 统计信息
+								PrintStatistics();
+								break;
+							case 2: // 返回
+								page = 0;
+								break;
+							}
+							Redraw = true;
+							break;
+						}
+					}
+				}
+
+				if (Redraw)
+				{
+					if (page == 0) DrawMainMenu();
+					else if (page == 1) DrawSearchMenu();
+					else if (page == 2) DrawModifyMenu();
+					else if (page == 3) DrawBorrowMenu();
+					else if (page == 4) DrawStatisticsMenu();
 				}
 			}
 		}

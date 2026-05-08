@@ -14,14 +14,34 @@ struct Button
 };
 
 extern Button mainButtons[];
-extern const int NumberOfButton;
+extern const int NumberOfmainButton;
+
+extern Button searchButtons[];
+extern const int NumberOfsearchButton;
+
+extern Button modifyButtons[];
+extern const int NumberOfmodifyButton;
+
+extern Button borrowButtons[];
+extern const int NumberOfborrowButton;
+
+extern Button statisticsButtons[];
+extern const int NumberOfstatisticsButton;
 
 void DrawMainMenu();
 
-void ShowResultList(const string title, const vector<Book>& list);
+void PrintResult(const string title, const vector<Book>& list);
 
-void ShowStatistics();
+void PrintStatistics();
 
 bool IsInButton(int mx, int my, const Button& btn);
 
-string ConsoleInput(const string& prompt);
+string InputByConsole(const string& prompt);
+
+void DrawSearchMenu();
+
+void DrawModifyMenu();
+
+void DrawBorrowMenu();
+
+void DrawStatisticsMenu();
