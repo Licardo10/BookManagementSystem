@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include "Graphics.h"
 #include <conio.h>
 #include <sstream>
@@ -7,18 +7,52 @@
 
 Button mainButtons[] =
 {
-    { 100, 150, 280, 40, "1. 查看所有图书" },
-    { 100, 200, 280, 40, "2. 按书名模糊查找" },
-    { 100, 250, 280, 40, "3. 组合查询 (如 设计 教程)" },
-    { 100, 300, 280, 40, "4. 按出版社查找" },
-    { 100, 350, 280, 40, "5. 添加新书" },
-    { 430, 150, 280, 40, "6. 修改图书 (按ISBN)" },
-    { 430, 200, 280, 40, "7. 删除图书 (按ISBN)" },
-    { 430, 250, 280, 40, "8. 统计信息" },
-    { 430, 350, 280, 40, "9. 退出系统" }
+    { 100, 150, 280, 40, "1. 查找图书" },
+    { 100, 220, 280, 40, "2. 修改图书" },
+    { 100, 290, 280, 40, "3. 借阅图书" },
+    { 100, 360, 280, 40, "4. 信息显示" },
+    { 430, 350, 280, 40, "5. 退出系统" }
 };
 
-const int NumberOfButton = sizeof(mainButtons) / sizeof(mainButtons[0]);
+const int NumberOfmainButton = sizeof(mainButtons) / sizeof(mainButtons[0]);
+
+Button searchButtons[] = {
+    { 100, 150, 280, 40, "1. 按书名查找" },
+    { 100, 200, 280, 40, "2. 按出版社查找" },
+    { 100, 250, 280, 40, "3. 组合查询" },
+    { 430, 150, 280, 40, "4. 查看所有图书" },
+    { 430, 350, 280, 40, "5. 返回主菜单" }
+};
+
+const int NumberOfsearchButton = sizeof(searchButtons) / sizeof(searchButtons[0]);
+
+Button modifyButtons[] = 
+{
+    { 100, 150, 280, 40, "1. 按ISBN修改" },
+    { 100, 200, 280, 40, "2. 按书名修改" },
+    { 100, 250, 280, 40, "3. 添加新书" },
+    { 430, 150, 280, 40, "4. 删除图书(ISBN)" },
+    { 430, 200, 280, 40, "5. 删除图书(书名)" },
+    { 430, 350, 280, 40, "6. 返回主菜单" }
+};
+
+const int NumberOfmodifyButton = sizeof(modifyButtons) / sizeof(modifyButtons[0]);
+
+Button borrowButtons[] = {
+    { 100, 150, 280, 40, "1. 借出图书(按ISBN)" },
+    { 100, 200, 280, 40, "2. 归还图书(按ISBN)" },
+    { 430, 350, 280, 40, "3. 返回主菜单" }
+};
+
+const int NumberOfborrowButton = sizeof(borrowButtons) / sizeof(borrowButtons[0]);
+
+Button statisticsButtons[] = {
+    { 100, 150, 280, 40, "1. 查看所有图书" },
+    { 100, 200, 280, 40, "2. 统计信息" },
+    { 430, 350, 280, 40, "3. 返回主菜单" }
+};
+
+const int NumberOfstatisticsButton = sizeof(statisticsButtons) / sizeof(statisticsButtons[0]);
 
 void DrawMainMenu()
 {
@@ -32,7 +66,7 @@ void DrawMainMenu()
     settextcolor(RGB(200, 200, 200));
     outtextxy(200, 100, "请点击下方按钮选择功能");
 
-    for (int i = 0; i < NumberOfButton; i++)
+    for (int i = 0; i < NumberOfmainButton; i++)
     {
         Button btn = mainButtons[i];
 
@@ -53,40 +87,187 @@ void DrawMainMenu()
     }
 }
 
-void ShowResultList(const string title, const vector<Book>& list)
+void DrawSearchMenu()
 {
     cleardevice();
 
-    settextstyle(24, 0, "微软雅黑");
+    settextstyle(28, 0, "微软雅黑");
     settextcolor(RGB(255, 255, 255));
-    outtextxy(50, 20, title.c_str());
+    outtextxy(250, 30, "查找图书");
 
-    settextstyle(16, 0, "微软雅黑");
-    settextcolor(RGB(220, 220, 220));
-
-    int y = 70;
-
-    if (list.empty())
-        outtextxy(50, y, "没有找到相关图书");
-    else
+    for (int i = 0; i < NumberOfsearchButton; i++)
     {
-        char line[256];
-        for (auto it = list.begin(); it != list.end(); it++)
-        {
-            sprintf_s(line, "ISBN:%-20s 书名:%-30s 作者:%-10s 出版社:%-20s 价格:%.2f",
-                it->ISBN.c_str(), it->name.c_str(), it->author.c_str(),
-                it->publisher.c_str(), it->price);
+        Button btn = searchButtons[i];
 
-            outtextxy(50, y, line);
-            y += 25;
+        setfillcolor(RGB(60, 130, 200));
+        setlinecolor(RGB(255, 255, 255));
+        fillroundrect(btn.x, btn.y, btn.x + btn.w, btn.y + btn.h, 10, 10);
 
-            if (y > win_height - 40) 
-            {
-                outtextxy(50, y, "...(更多内容，按任意键返回)");
-                break;
-            }
-        }
+        setbkmode(TRANSPARENT);
+        settextstyle(18, 0, "微软雅黑");
+        settextcolor(RGB(255, 255, 255));
+
+        int tw = textwidth(btn.text.c_str());
+        int th = textheight(btn.text.c_str());
+        outtextxy(btn.x + (btn.w - tw) / 2, btn.y + (btn.h - th) / 2,
+            btn.text.c_str());
     }
+}
+
+void DrawModifyMenu()
+{
+    cleardevice();
+
+    settextstyle(28, 0, "微软雅黑");
+    settextcolor(RGB(255, 255, 255));
+    outtextxy(250, 30, "修改图书");
+
+    for (int i = 0; i < NumberOfmodifyButton; i++)
+    {
+        Button btn = modifyButtons[i];
+
+        setfillcolor(RGB(60, 130, 200));
+        setlinecolor(RGB(255, 255, 255));
+        fillroundrect(btn.x, btn.y, btn.x + btn.w, btn.y + btn.h, 10, 10);
+
+        setbkmode(TRANSPARENT);
+        settextstyle(18, 0, "微软雅黑");
+        settextcolor(RGB(255, 255, 255));
+        int tw = textwidth(btn.text.c_str());
+        int th = textheight(btn.text.c_str());
+        outtextxy(btn.x + (btn.w - tw) / 2, btn.y + (btn.h - th) / 2,
+            btn.text.c_str());
+    }
+}
+
+void DrawBorrowMenu()
+{
+    cleardevice();
+
+    settextstyle(28, 0, "微软雅黑");
+    settextcolor(RGB(255, 255, 255));
+    outtextxy(250, 30, "借阅图书");
+
+    for (int i = 0; i < NumberOfborrowButton; i++)
+    {
+        Button btn = borrowButtons[i];
+
+        setfillcolor(RGB(60, 130, 200));
+        setlinecolor(RGB(255, 255, 255));
+        fillroundrect(btn.x, btn.y, btn.x + btn.w, btn.y + btn.h, 10, 10);
+
+        setbkmode(TRANSPARENT);
+        settextstyle(18, 0, "微软雅黑");
+        settextcolor(RGB(255, 255, 255));
+
+        int tw = textwidth(btn.text.c_str());
+        int th = textheight(btn.text.c_str());
+        outtextxy(btn.x + (btn.w - tw) / 2, btn.y + (btn.h - th) / 2,
+            btn.text.c_str());
+    }
+}
+
+void DrawStatisticsMenu()
+{
+    cleardevice();
+
+    settextstyle(28, 0, "微软雅黑");
+    settextcolor(RGB(255, 255, 255));
+    outtextxy(250, 30, "信息统计");
+
+    for (int i = 0; i < NumberOfstatisticsButton; i++)
+    {
+        Button btn = statisticsButtons[i];
+
+        setfillcolor(RGB(60, 130, 200));
+        setlinecolor(RGB(255, 255, 255));
+        fillroundrect(btn.x, btn.y, btn.x + btn.w, btn.y + btn.h, 10, 10);
+
+        setbkmode(TRANSPARENT);
+        settextstyle(18, 0, "微软雅黑");
+        settextcolor(RGB(255, 255, 255));
+
+        int tw = textwidth(btn.text.c_str());
+        int th = textheight(btn.text.c_str());
+        outtextxy(btn.x + (btn.w - tw) / 2, btn.y + (btn.h - th) / 2,
+            btn.text.c_str());
+    }
+}
+
+void PrintResult(const string title, const vector<Book>& list)
+{
+    const int Ystart = 70;          // 第一行起始 Y
+    const int lineHeight = 25;      // 行高
+    const int maxLines = 20;        // 每屏最多显示的行数
+    int total = (int)list.size();
+
+    if (total == 0)
+    {
+        cleardevice();
+
+        settextstyle(24, 0, "微软雅黑");
+        settextcolor(RGB(255, 255, 255));
+        outtextxy(50, 20, title.c_str());
+
+        settextstyle(16, 0, "微软雅黑");
+        settextcolor(RGB(220, 220, 220));
+        outtextxy(50, Ystart, "没有找到图书");
+
+        settextstyle(18, 0, "微软雅黑");
+        outtextxy(300, win_height - 40, "按任意键返回");
+
+        (void)_getch();
+        return;
+    }
+
+    int currentIdx = 0;  // 当前页中第一本图书在 list 中的下标
+    while (currentIdx < total)
+    {
+        cleardevice();
+
+        settextstyle(24, 0, "微软雅黑");
+        settextcolor(RGB(255, 255, 255));
+        // 显示标题和页码
+        char titleBuf[128];
+        sprintf_s(titleBuf, "%s  (%d/%d)", title.c_str(),
+            currentIdx / maxLines + 1, (total - 1) / maxLines + 1);
+        outtextxy(50, 20, titleBuf);
+
+        settextstyle(16, 0, "微软雅黑");
+        settextcolor(RGB(220, 220, 220));
+
+        int y = Ystart, count = 0;
+        for (int i = currentIdx; i < total && count < maxLines; i++, count++)
+        {
+            char line[300];
+            sprintf_s(line, "ISBN:%-20s 书名:%-30s 作者:%-10s 出版社:%-20s 价格:%.2f",
+                list[i].ISBN.c_str(), list[i].name.c_str(), list[i].author.c_str(),
+                list[i].publisher.c_str(), list[i].price);
+            outtextxy(50, y, line);
+            y += lineHeight;
+        }
+
+        settextstyle(18, 0, "微软雅黑");
+        settextcolor(RGB(200, 200, 200));
+
+        // 判断是否还有下一页
+        if (currentIdx + count < total)
+        {
+            outtextxy(200, win_height - 40, "按任意键继续，按 ESC 返回");
+            int key = _getch();
+            if (key == 27)  // ESC
+                return;
+        }
+        else
+        {
+            outtextxy(300, win_height - 40, "已显示全部，按任意键返回主菜单");
+            (void)_getch();
+            return;
+        }
+
+        currentIdx += count;  // 下一页
+    }
+    
 
     settextstyle(18, 0, "微软雅黑");
     settextcolor(RGB(200, 200, 200));
@@ -94,7 +275,7 @@ void ShowResultList(const string title, const vector<Book>& list)
     (void)_getch();
 }
 
-void ShowStatistics()
+void PrintStatistics()
 {
     cleardevice();
 
@@ -129,7 +310,7 @@ void ShowStatistics()
     outtextxy(50, y, buf);
     y += 30;
 
-    outtextxy(50, y, "各出版社图书数量:%d本");
+    outtextxy(50, y, "各出版社图书数量:");
     y += 25;
     for (const auto& p : presses)
     {
@@ -169,7 +350,7 @@ bool IsInButton(int mx, int my, const Button& btn)
         return false;
 }
 
-string ConsoleInput(const string& prompt)
+string InputByConsole(const string& prompt)
 {
     HWND hwnd = GetHWnd();
     if (hwnd)

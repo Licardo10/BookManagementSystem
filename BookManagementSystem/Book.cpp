@@ -60,7 +60,7 @@ Book* SearchBookByName(vector<Book>& books, const string& name)
 	return NULL;
 }
 
-vector<Book> FuzzySearchBookByName(vector<Book>& books, const string& keyword)
+vector<Book> FuzzySearchByName(vector<Book>& books, const string& keyword)
 {
 	vector<Book> results;	// 存储模糊匹配的结果
 	for (auto it = books.begin(); it != books.end(); it++)
@@ -109,32 +109,6 @@ vector<Book> CombinedSearchByName(vector<Book>& books, const string& name)
 	return results;
 }
 
-Book* UpdateBookByISBN(vector<Book>& books, const string& ISBN, const Book& newinformation)
-{
-	for (auto it = books.begin(); it != books.end(); it++)
-	{
-		if (it->ISBN == ISBN)
-		{
-			*it = newinformation;
-			return &(*it);
-		}
-	}
-	return NULL;
-}
-
-Book* UpdateBookByName(vector<Book>& books, const string& name, const Book& newinformation)
-{
-	for (auto it = books.begin(); it != books.end(); it++)
-	{
-		if (it->name == name)
-		{
-			*it = newinformation;
-			return &(*it);
-		}
-	}
-	return NULL;
-}
-
 int TotalBooks(const vector<Book>& books)
 {
 	return (int)books.size();
@@ -167,7 +141,7 @@ vector<Book> GetAllBooks(const vector<Book>& books)
 	return books;
 }
 
-bool LoadBooksFromFile(vector<Book>& books, const string& filename)
+bool LoadDataFromFile(vector<Book>& books, const string& filename)
 {
 	FILE* fp = fopen(filename.c_str(), "r");
 	if (!fp)
@@ -200,7 +174,7 @@ bool LoadBooksFromFile(vector<Book>& books, const string& filename)
 	return true;
 }
 
-bool SaveBooksToFile(vector<Book>& books, const string& filename)
+bool SaveDataToFile(vector<Book>& books, const string& filename)
 {
 	FILE* fp = fopen(filename.c_str(), "w");
 	if (!fp)
@@ -213,4 +187,28 @@ bool SaveBooksToFile(vector<Book>& books, const string& filename)
 	}
 	fclose(fp);
 	return true;
+}
+
+void BorrowByISBN(vector<Book>& books, const string& ISBN)
+{
+	string isbn = ISBN;
+	for (auto it = books.begin(); it != books.end(); it++)
+	{
+		if (it->ISBN == isbn && it->state==0)
+		{
+			it->state = 1;
+		}
+	}
+}
+
+void ReturnByISBN(vector<Book>& books, const string& ISBN)
+{
+	string isbn = ISBN;
+	for (auto it = books.begin(); it != books.end(); it++)
+	{
+		if (it->ISBN == isbn && it->state == 1)
+		{
+			it->state = 0;
+		}
+	}
 }
