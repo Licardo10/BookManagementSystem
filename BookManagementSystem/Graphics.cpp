@@ -56,6 +56,7 @@ const int NumberOfstatisticsButton = sizeof(statisticsButtons) / sizeof(statisti
 
 void DrawMainMenu()
 {
+	// 清空屏幕
     cleardevice();
 
     settextstyle(36, 0, "微软雅黑");
@@ -66,6 +67,7 @@ void DrawMainMenu()
     settextcolor(RGB(200, 200, 200));
     outtextxy(200, 100, "请点击下方按钮选择功能");
 
+	// 绘制按钮
     for (int i = 0; i < NumberOfmainButton; i++)
     {
         Button btn = mainButtons[i];
@@ -74,7 +76,7 @@ void DrawMainMenu()
         setlinecolor(RGB(255, 255, 255));
 
         fillroundrect(btn.x, btn.y, btn.x + btn.w, btn.y + btn.h, 10, 10);
-        setbkmode(TRANSPARENT);
+		setbkmode(TRANSPARENT);     // 设置背景透明，避免文本覆盖按钮的背景颜色
 
         settextstyle(18, 0, "微软雅黑");
         settextcolor(RGB(255, 255, 255));
@@ -194,20 +196,20 @@ void DrawStatisticsMenu()
     }
 }
 
-void PrintResult(const string title, const vector<Book>& list)
+void PrintResult(const string text, const vector<Book>& list)
 {
-    const int Ystart = 70;          // 第一行起始 Y
-    const int lineHeight = 25;      // 行高
+    const int Ystart = 70;          // 第一行起始Y值
+    const int lineHeight = 25;      
     const int maxLines = 20;        // 每屏最多显示的行数
     int total = (int)list.size();
 
-    if (total == 0)
+	if (total == 0)     // 列表为空
     {
         cleardevice();
 
         settextstyle(24, 0, "微软雅黑");
         settextcolor(RGB(255, 255, 255));
-        outtextxy(50, 20, title.c_str());
+        outtextxy(50, 20, text.c_str());
 
         settextstyle(16, 0, "微软雅黑");
         settextcolor(RGB(220, 220, 220));
@@ -227,19 +229,21 @@ void PrintResult(const string title, const vector<Book>& list)
 
         settextstyle(24, 0, "微软雅黑");
         settextcolor(RGB(255, 255, 255));
+
         // 显示标题和页码
-        char titleBuf[128];
-        sprintf_s(titleBuf, "%s  (%d/%d)", title.c_str(),
+        char title[128];
+        sprintf_s(title, "%s  (%d/%d)", text.c_str(),
             currentIdx / maxLines + 1, (total - 1) / maxLines + 1);
-        outtextxy(50, 20, titleBuf);
+        outtextxy(50, 20, title);
 
         settextstyle(16, 0, "微软雅黑");
         settextcolor(RGB(220, 220, 220));
 
         int y = Ystart, count = 0;
+		// 从 list 中当前页的第一本图书开始，依次显示每本图书的信息，直到达到 maxLines 或者显示完所有图书
         for (int i = currentIdx; i < total && count < maxLines; i++, count++)
         {
-            char line[300];
+            char line[256];
             sprintf_s(line, "ISBN:%-20s 书名:%-30s 作者:%-10s 出版社:%-20s 价格:%.2f",
                 list[i].ISBN.c_str(), list[i].name.c_str(), list[i].author.c_str(),
                 list[i].publisher.c_str(), list[i].price);
@@ -260,7 +264,7 @@ void PrintResult(const string title, const vector<Book>& list)
         }
         else
         {
-            outtextxy(300, win_height - 40, "已显示全部，按任意键返回主菜单");
+            outtextxy(300, win_height - 40, "已显示完毕，按任意键返回主菜单");
             (void)_getch();
             return;
         }
@@ -268,10 +272,10 @@ void PrintResult(const string title, const vector<Book>& list)
         currentIdx += count;  // 下一页
     }
     
-
     settextstyle(18, 0, "微软雅黑");
     settextcolor(RGB(200, 200, 200));
     outtextxy(300, win_height - 40, "按任意键返回主菜单");
+
     (void)_getch();
 }
 
@@ -292,6 +296,7 @@ void PrintStatistics()
     outtextxy(50, y, buf);
     y += 30;
 
+	// 统计所有出版社
     vector<string> presses;
     for (auto it = books.begin(); it != books.end(); it++)
     {
@@ -306,6 +311,7 @@ void PrintStatistics()
         if (!repeated)
             presses.push_back(it->publisher);
     }
+
     sprintf_s(buf, "出版社数量:%d个", (int)presses.size());
     outtextxy(50, y, buf);
     y += 30;
@@ -354,7 +360,7 @@ string InputByConsole(const string& prompt)
 {
     HWND hwnd = GetHWnd();
     if (hwnd)
-        ShowWindow(hwnd, SW_MINIMIZE);
+		ShowWindow(hwnd, SW_MINIMIZE);      // 最小化窗口，显示控制台
 
     system("cls");
 
@@ -369,6 +375,6 @@ string InputByConsole(const string& prompt)
         result.pop_back();
     }
     if (hwnd)
-        ShowWindow(hwnd, SW_RESTORE);
+        ShowWindow(hwnd, SW_RESTORE);      // 恢复窗口
     return result;
 }

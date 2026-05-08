@@ -8,7 +8,7 @@ using namespace std;
 
 const string DataFile = "books.txt";
 
-//初始化数据
+// 初始化数据
 static bool InitData()
 {
 	if (LoadDataFromFile(books, DataFile))
@@ -19,36 +19,42 @@ static bool InitData()
 
 int	main()
 {
+	// 初始化窗口
 	initgraph(win_width, win_height);
 	setbkcolor(RGB(35, 35, 45));
+
+	// 获取窗口地址并设置标题
 	HWND hwnd = GetHWnd();
 	SetWindowTextA(hwnd, "图书管理系统");
 
 	InitData();
 
-	int page = 0;	//0=主菜单	1=查找界面	2=修改界面	3=借阅界面	4=信息界面
+	int page = 0;	// 0=主菜单	1=查找界面	2=修改界面	3=借阅界面	4=信息界面
 
 	DrawMainMenu();
 
+	// 消息循环
 	ExMessage msg = { 0 };
 	while (true)
 	{
+		// 监测鼠标和键盘事件
 		if (peekmessage(&msg, EM_MOUSE | EM_KEY))
 		{
-			//按ESC退出
+			// 按ESC退出
 			if (msg.message == WM_KEYDOWN && msg.vkcode == VK_ESCAPE)
 			{
 				closegraph();
 				return 0;
 			}
-			//
+			// 鼠标点击事件
 			if (msg.message == WM_LBUTTONDOWN)
 			{
 				int mx = msg.x;
 				int my = msg.y;
+
+				// 判断是否需要重绘界面
 				bool Redraw = false;
 
-				//主菜单
 				if(page==0)
 				{
 					for (int i = 0; i < NumberOfmainButton; i++)
@@ -100,40 +106,40 @@ int	main()
 							switch (i)
 							{
 							case 0:
-							{
+							{	//按书名查找
 								string name = InputByConsole("请输入书名:");
 								vector<Book> c0 = FuzzySearchByName(books, name);
 								PrintResult("结果为:",c0);
 								break;
 							}
 							case 1:
-							{
+							{	// 按出版社查找
 								string name = InputByConsole("请输入出版社:");
 								vector<Book> c1 = FuzzySearchByPublisher(books, name);
 								PrintResult("结果为:", c1);
 								break;
 							}
 							case 2:
-							{
+							{	// 组合查找
 								string name = InputByConsole("请输入关键字(以空格分隔):");
 								vector<Book> c2 = CombinedSearchByName(books, name);
 								PrintResult("结果为:", c2);
 								break;
 							}
 							case 3:
-							{
+							{	// 显示所有图书
 								vector<Book> c3 = GetAllBooks(books);
 								PrintResult("结果为:", c3);
 								break;
 							}
 							case 4:
-							{
+							{	// 返回主菜单
 								page = 0;
 								break;
 							}
 							}
 							Redraw = true;
-							//break;
+							break;
 						}
 					}
 				}
@@ -145,8 +151,8 @@ int	main()
 						{
 							switch (i)
 							{
-							case 0://按ISBN修改图书
-							{
+							case 0:
+							{	// 按ISBN修改图书
 								string isbn = InputByConsole("ISBN:");
 								Book* c0 = SearchBookByISBN(books, isbn);
 
@@ -174,8 +180,8 @@ int	main()
 								SaveDataToFile(books, DataFile);
 								break;
 							}
-							case 1://按书名修改
-							{
+							case 1:
+							{	// 按书名修改
 								string name = InputByConsole("请输入原书名:");
 								Book* c1 = SearchBookByName(books, name);
 
@@ -203,8 +209,8 @@ int	main()
 								SaveDataToFile(books, DataFile);
 								break;
 							}
-							case 2://添加新书
-							{
+							case 2:
+							{	// 添加新书
 								Book newbook;
 								string input;
 
@@ -222,8 +228,8 @@ int	main()
 								SaveDataToFile(books, DataFile);
 								break;
 							}
-							case 3://按ISBN删除
-							{
+							case 3:
+							{	// 按ISBN删除
 								string isbn = InputByConsole("请输入:");
 								if (DeleteBookByISBN(books, isbn))
 								{
@@ -234,8 +240,8 @@ int	main()
 									MessageBoxA(hwnd, "未找到该图书！", "错误", MB_OK);
 								break;
 							}
-							case 4://按书名删除
-							{
+							case 4:
+							{	// 按书名删除
 								string name = InputByConsole("请输入:");
 								if (DeleteBookByName(books, name))
 								{
@@ -253,7 +259,7 @@ int	main()
 							}
 							}
 							Redraw = true;
-							//break;
+							break;
 						}
 					}
 				}
@@ -265,8 +271,8 @@ int	main()
 						{
 							switch (i)
 							{
-							case 0: //借出
-							{
+							case 0: 
+							{	// 借出
 								string isbn = InputByConsole("请输入ISBN:");
 								Book* book = SearchBookByISBN(books, isbn);
 								if (!book)
@@ -281,8 +287,8 @@ int	main()
 								}
 								break;
 							}
-							case 1: // 归还
-							{
+							case 1: 
+							{	// 归还
 								string isbn = InputByConsole("请输入ISBN:");
 								Book* book = SearchBookByISBN(books, isbn);
 								if (!book)
@@ -314,18 +320,22 @@ int	main()
 						{
 							switch (i)
 							{
-							case 0: // 查看所有图书
-							{
+							case 0: 
+							{	// 查看所有图书
 								vector<Book> c0 = GetAllBooks(books);
 								PrintResult("所有图书", c0);
 								break;
 							}
-							case 1: // 统计信息
+							case 1:
+							{	// 统计信息
 								PrintStatistics();
 								break;
-							case 2: // 返回
+							}
+							case 2:
+							{	// 返回
 								page = 0;
 								break;
+							}
 							}
 							Redraw = true;
 							break;

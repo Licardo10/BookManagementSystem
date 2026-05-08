@@ -28,20 +28,20 @@ extern const int NumberOfborrowButton;
 extern Button statisticsButtons[];
 extern const int NumberOfstatisticsButton;
 
-void DrawMainMenu();
+void DrawMainMenu();		// 绘制主菜单界面
 
-void PrintResult(const string title, const vector<Book>& list);
+void PrintResult(const string title, const vector<Book>& list);		// 打印查询结果
 
-void PrintStatistics();
+void PrintStatistics();		// 打印统计信息
 
-bool IsInButton(int mx, int my, const Button& btn);
+bool IsInButton(int mx, int my, const Button& btn);		// 判断鼠标坐标是否在按钮范围内
 
-string InputByConsole(const string& prompt);
+string InputByConsole(const string& prompt);			// 从控制台输入字符串
 
-void DrawSearchMenu();
+void DrawSearchMenu();			// 绘制查找界面
 
-void DrawModifyMenu();
+void DrawModifyMenu();			// 绘制修改界面
 
-void DrawBorrowMenu();
+void DrawBorrowMenu();			// 绘制借阅界面
 
-void DrawStatisticsMenu();
+void DrawStatisticsMenu();		// 绘制统计界面
