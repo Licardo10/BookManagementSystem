@@ -65,7 +65,7 @@ vector<Book> FuzzySearchByName(vector<Book>& books, const string& keyword)
 	vector<Book> results;	// 存储模糊匹配的结果
 	for (auto it = books.begin(); it != books.end(); it++)
 	{
-		if (it->name.find(keyword) != string::npos)
+		if (it->name.find(keyword) != string::npos)	// string::find返回值为string::npos表示未找到
 			results.push_back(*it);
 	}
 	return results;
@@ -73,7 +73,7 @@ vector<Book> FuzzySearchByName(vector<Book>& books, const string& keyword)
 
 vector<Book> FuzzySearchByPublisher(vector<Book>& books, const string& keyword)
 {
-	vector<Book> results;	// 存储模糊匹配的结果
+	vector<Book> results;	
 	for (auto it = books.begin(); it != books.end(); it++)
 	{
 		if (it->publisher.find(keyword) != string::npos)
@@ -85,7 +85,7 @@ vector<Book> FuzzySearchByPublisher(vector<Book>& books, const string& keyword)
 vector<Book> CombinedSearchByName(vector<Book>& books, const string& name)
 {
 	vector<Book> results;
-	vector<string> keywords;
+	vector<string> keywords;	// 存储分割后的关键字
 	stringstream ss(name);
 	string token;
 	while (getline(ss, token, ' '))
@@ -146,7 +146,9 @@ bool LoadDataFromFile(vector<Book>& books, const string& filename)
 	FILE* fp = fopen(filename.c_str(), "r");
 	if (!fp)
 		return false;
-	books.clear();
+
+	books.clear();		// 先清空原有数据
+
 	char line[1024];
 	while (fgets(line, sizeof(line), fp))
 	{
@@ -160,7 +162,7 @@ bool LoadDataFromFile(vector<Book>& books, const string& filename)
 		int count = sscanf(line, "%49[^|]|%49[^|]|%49[^|]|%49[^|]|%19[^|]|%lf|%d",
 			ISBN, name, author, publisher, pubdate, &b.price, &b.state);
 
-		if (count == 7)
+		if (count == 7)		// 成功获取所有信息
 		{
 			b.ISBN = ISBN;
 			b.name = name;
@@ -179,6 +181,7 @@ bool SaveDataToFile(vector<Book>& books, const string& filename)
 	FILE* fp = fopen(filename.c_str(), "w");
 	if (!fp)
 		return false;
+
 	for (auto it = books.begin(); it != books.end(); it++)
 	{
 		fprintf(fp, "%s|%s|%s|%s|%s|%.2f|%d\n", it->ISBN.c_str(), it->name.c_str(), 
