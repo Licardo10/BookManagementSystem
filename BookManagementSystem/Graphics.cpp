@@ -244,9 +244,9 @@ void PrintResult(const string text, const vector<Book>& list)
         for (int i = currentIdx; i < total && count < maxLines; i++, count++)
         {
             char line[256];
-            sprintf_s(line, "ISBN:%-20s 书名:%-30s 作者:%-10s 出版社:%-20s 价格:%.2f",
+            sprintf_s(line, "ISBN:%-20s 书名:%-25s 作者:%-8s 出版社:%-16s 出版日期:%-12s 价格:%.2f",
                 list[i].ISBN.c_str(), list[i].name.c_str(), list[i].author.c_str(),
-                list[i].publisher.c_str(), list[i].price);
+                list[i].publisher.c_str(), list[i].pubdate.c_str(), list[i].price);
             outtextxy(50, y, line);
             y += lineHeight;
         }
