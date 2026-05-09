@@ -155,6 +155,11 @@ int	main()
 							{	// 按ISBN修改图书
 								string isbn = InputByConsole("ISBN:");
 								Book* c0 = SearchBookByISBN(books, isbn);
+								if (c0 == NULL)
+								{
+									MessageBoxA(hwnd, "未找到该ISBN！", "错误", MB_OK);
+									break;
+								}
 
 								string input;
 								input = InputByConsole("新书名 (留空不变): ");
@@ -184,6 +189,11 @@ int	main()
 							{	// 按书名修改
 								string name = InputByConsole("请输入原书名:");
 								Book* c1 = SearchBookByName(books, name);
+								if (c1 == NULL)
+								{
+									MessageBoxA(hwnd, "未找到该书名！", "错误", MB_OK);
+									break;
+								}
 
 								string input;
 								input = InputByConsole("新书名 (留空不变): ");
