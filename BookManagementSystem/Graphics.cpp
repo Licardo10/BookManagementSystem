@@ -2,7 +2,6 @@
 #include "Graphics.h"
 #include <conio.h>
 #include <sstream>
-#include <iomanip>
 #include <windows.h>
 
 Button mainButtons[] =

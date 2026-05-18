@@ -1,4 +1,9 @@
-﻿#define _CRT_SECURE_NO_WARNINGS
+﻿/*
+这是一个基于C++ EasyX的图书管理系统，实现了图书的查找、修改、借阅和统计功能，并提供了一个图形化界面。
+已上传至GitHub，https://github.com/Licardo10/BookManagementSystem
+*/
+
+#define _CRT_SECURE_NO_WARNINGS
 #include <graphics.h>
 #include <iostream>
 #include <string>
@@ -55,7 +60,7 @@ int	main()
 				// 判断是否需要重绘界面
 				bool Redraw = false;
 
-				if(page==0)
+				if(page == 0)
 				{
 					for (int i = 0; i < NumberOfmainButton; i++)
 					{
