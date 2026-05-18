@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# ====== 图书管理系统项目 ======
+build/
+.vscode/
+*.user
