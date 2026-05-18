@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Book.h"
 #include <cstdio>
-#include <cstring> 
+#include <cstring>
 #include <cstdlib>
 #include <sstream>
 
